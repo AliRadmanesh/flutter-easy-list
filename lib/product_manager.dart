@@ -4,11 +4,9 @@ import './products.dart';
 import './product_control.dart';
 
 class ProductManager extends StatefulWidget {
-  final String startingProduct;
+  final Map<String, String> startingProduct;
 
-  /*
-  ## Here in class constructor we use default value
-  */
+  /* Here in class constructor we use default value */
   ProductManager({this.startingProduct}) {
     // print('[ProductManager Widget] Constructor');
   }
@@ -22,31 +20,29 @@ class ProductManager extends StatefulWidget {
 
 class _ProductManagerState extends State<ProductManager> {
   /*
-  ## Also our products list is final, we can add to it.
-  ## final means it couldn't be changed. but we can add
-  ## to it (modify the exsiting value)! we just can't
-  ## assign a new value to it, like _products = ['Ali'];
-  ## reason: Objects and lists in general are reference types
-  ## and we store a reference to their contents.
-  ## Note: In final variables, we can modify them, but
-  ## we can't assign a new value to them.
-  ## e.g. final age = 25; age.round() is OK!
+    Also our products list is final, we can add to it.
+    final means it couldn't be changed. but we can add
+    to it (modify the exsiting value)! we just can't
+    assign a new value to it, like _products = ['Ali'];
+    reason: Objects and lists in general are reference types
+    and we store a reference to their contents.
+    Note: In final variables, we can modify them, but
+    we can't assign a new value to them.
+    e.g. final age = 25; age.round() is OK!
   */
-  List<String> _products = [];
+  List<Map<String, String>> _products = [];
 
   @override
   void initState() {
     // print('[ProductManager State] initState()');
     /*
-    ## No need to call setState here, because this method runs before
-    ## build method even exist! so no need to change and re-render build.
+      No need to call setState here, because this method runs before
+      build method even exist! so no need to change and re-render build.
     */
     if (widget.startingProduct != null) {
       _products.add(widget.startingProduct);
     }
-    /*
-    ## Call parent initState() method and must be at the end of this block.
-    */
+    /* Call parent initState() method and must be at the end of this block. */
     super.initState();
   }
 
@@ -56,7 +52,13 @@ class _ProductManagerState extends State<ProductManager> {
     super.didUpdateWidget(oldWidget);
   }
 
-  void _addProduct(String product) {
+  /*
+    Map is like Object in JS. It holds key-value variables.
+    Keys must be string or numbers and values can be of any type.
+    If you have multiple value types, for generic title (down below)
+    you should use dynamic.
+  */
+  void _addProduct(Map<String, String> product) {
     setState(() {
       _products.add(product);
       // print(_products);

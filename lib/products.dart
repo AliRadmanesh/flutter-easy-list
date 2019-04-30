@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import './pages/product.dart';
+
 class Products extends StatelessWidget {
-  final List<String> products;
+  final List<Map<String, String>> products;
 
   Products(this.products) {
     // print('[Product Widget] Constructor');
@@ -11,8 +13,29 @@ class Products extends StatelessWidget {
     return Card(
       child: Column(
         children: <Widget>[
-          Image.asset('assets/food.jpg'),
-          Text(products[index]),
+          Image.asset(products[index]['image']),
+          Text(products[index]['title']),
+          ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FlatButton(
+                child: Text('Details'),
+                /*
+                  [Navigator] is a built-in tool in flutter for Navigation.
+                  [Navigator.push] add a new page to the app stack and
+                  [Navigator.pop] will remove current page and will go back
+                  us to the prev. page.
+                */
+                onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => ProductPage(
+                            products[index]['title'], products[index]['image']),
+                      ),
+                    ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -20,32 +43,30 @@ class Products extends StatelessWidget {
 
   Widget _buildProductList() {
     /*
-    ## BEST PRACTICE: When you want to return nothing to the screen
-    ## you can't just return null or undefined! you must return a
-    ## widget. The good part of returning a [Container] is that
-    ## it won't occupy any space on the screen and also won't impact
-    ## performance issue.
+      BEST PRACTICE: When you want to return nothing to the screen
+      you can't just return null or undefined! you must return a
+      widget. The good part of returning a [Container] is that
+      it won't occupy any space on the screen and also won't impact
+      performance issue.
     */
     Widget productCards = Container();
     if (products.length > 0) {
       /*
-      ## [ListView] is great for limited amount of widgets/elements
-      ## inside it. But for the situation where you have dynamic
-      ## amount of items or very long list of items, [ListView]
-      ## is inefficient. because all elements will be rendered
-      ## on the screen, even those which aren't visible on the screen
-      ## so it's not a good idea for long lists. instead we use
-      ## [ListView.builder()] for this ocassion.
+        [ListView] is great for limited amount of widgets/elements
+        inside it. But for the situation where you have dynamic
+        amount of items or very long list of items, [ListView]
+        is inefficient. because all elements will be rendered
+        on the screen, even those which aren't visible on the screen
+        so it's not a good idea for long lists. instead we use
+        [ListView.builder()] for this ocassion.
       */
       productCards = ListView.builder(
         /*
-        ## [itemBuilder] contains a method which defines what does
-        ## building an item mean & how is an item built.
+          [itemBuilder] contains a method which defines what does
+          building an item mean & how is an item built.
         */
         itemBuilder: _buildProductItem,
-        /*
-        ## [itemCount] indicates how many items will have to be built
-        */
+        /* [itemCount] indicates how many items will have to be built */
         itemCount: products.length,
       );
     } else {

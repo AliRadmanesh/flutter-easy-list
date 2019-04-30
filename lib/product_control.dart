@@ -4,8 +4,8 @@ class ProductControl extends StatelessWidget {
   final Function addProduct;
 
   /*
-  ## bind _addProduct() of parent widget to this.addProduct
-  ## that is a function reference.
+    bind _addProduct() of parent widget to this.addProduct
+    that is a function reference.
   */
   ProductControl(this.addProduct);
 
@@ -14,10 +14,8 @@ class ProductControl extends StatelessWidget {
     return RaisedButton(
       color: Theme.of(context).primaryColor,
       onPressed: () {
-        /*
-        ## Call addProduct function of parent widget to change the state
-        */
-        addProduct('Sweets');
+        /* Call addProduct function of parent widget to change the state */
+        addProduct({'title': 'Chocolate', 'image': 'assets/food.jpg'});
       },
       child: Text('Add Product'),
     );
