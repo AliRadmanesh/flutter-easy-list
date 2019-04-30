@@ -1,4 +1,6 @@
-// Pre-defined functions and tools for creating our application.
+/*
+## Pre-defined functions and tools for creating our application.
+*/
 import 'package:flutter/material.dart';
 /*
 ## rendering class is usefull for debugging the user interface
@@ -7,7 +9,9 @@ import 'package:flutter/material.dart';
 
 import './product_manager.dart';
 
-// This is our app's core function, where it starts to launch!
+/*
+## This is our app's core function, where it starts to launch!
+*/
 void main() {
   /*
   ## To show each element, its padding & margin, use this:
@@ -25,12 +29,14 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  // Everything in flutter is widget. even
-  // our whole application is a widget!
-  // We have 2 kind of widgets:
-  // 1. Stateless: Displaying something
-  // 2. Stateful: Can work with date and modify them.
+  /*
+  ## This widget is the root of your application.
+  ## Everything in flutter is widget. even
+  ## our whole application is a widget!
+  ## We have 2 kind of widgets:
+  ## 1. Stateless: Displaying something
+  ## 2. Stateful: Can work with date and modify them.
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +56,7 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: Text('Easy List'),
         ),
-        body: ProductManager('Food Tester'),
+        body: ProductManager(),
       ),
     );
   }
