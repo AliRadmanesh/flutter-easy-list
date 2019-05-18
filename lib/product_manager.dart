@@ -7,7 +7,7 @@ class ProductManager extends StatefulWidget {
   final Map<String, String> startingProduct;
 
   /* Here in class constructor we use default value */
-  ProductManager({this.startingProduct}) {
+  ProductManager({ this.startingProduct }) {
     // print('[ProductManager Widget] Constructor');
   }
 
@@ -30,7 +30,7 @@ class _ProductManagerState extends State<ProductManager> {
     we can't assign a new value to them.
     e.g. final age = 25; age.round() is OK!
   */
-  List<Map<String, String>> _products = [];
+  List<Map<String, String>> _products = []; // It's like an array of Objects!
 
   @override
   void initState() {
@@ -64,6 +64,12 @@ class _ProductManagerState extends State<ProductManager> {
       // print(_products);
     });
   }
+  
+  void _deleteProduct(int index) {
+    setState(() {
+     _products.removeAt(index);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +81,7 @@ class _ProductManagerState extends State<ProductManager> {
           child: ProductControl(_addProduct),
         ),
         Expanded(
-          child: Products(_products),
+          child: Products(_products, deleteProduct: _deleteProduct),
         )
       ],
     );

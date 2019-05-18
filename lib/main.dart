@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 /* rendering class is usefull for debugging the user interface */
 // import 'package:flutter/rendering.dart';
-import './pages/home.dart';
+import './pages/auth.dart';
 
 /* This is our app's core function, where it starts to launch! */
 void main() {
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.deepOrange,
         accentColor: Colors.deepPurple,
       ),
-      home: HomePage(),
+      home: AuthPage(),
     );
   }
 }
