@@ -1,37 +1,12 @@
 import 'package:flutter/material.dart';
 
+import './product_card.dart';
+
 class Products extends StatelessWidget {
   final List<Map<String, dynamic>> products;
 
   Products(this.products) {
     // print('[Product Widget] Constructor');
-  }
-
-  Widget _buildProductItem(BuildContext context, int index) {
-    return Card(
-      child: Column(
-        children: <Widget>[
-          Image.asset(products[index]['image']),
-          Text(products[index]['title']),
-          ButtonBar(
-            alignment: MainAxisAlignment.center,
-            children: <Widget>[
-              FlatButton(
-                child: Text('Details'),
-                /*
-                  [Navigator] is a built-in tool in flutter for Navigation.
-                  [Navigator.push] add a new page to the app stack and
-                  [Navigator.pop] will remove current page and will go back
-                  us to the previous page.
-                */
-                onPressed: () => Navigator.pushNamed<bool>(
-                    context, '/product/' + index.toString()),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _buildProductList() {
@@ -58,7 +33,8 @@ class Products extends StatelessWidget {
           [itemBuilder] contains a method which defines what does
           building an item mean & how is an item built.
         */
-        itemBuilder: _buildProductItem,
+        itemBuilder: (BuildContext context, int index) =>
+            ProductCard(products[index], index),
         /* [itemCount] indicates how many items will have to be built */
         itemCount: products.length,
       );
