@@ -81,6 +81,7 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.deepOrange,
         accentColor: Colors.deepPurple,
         // fontFamily: 'Oswald', // If you want a global font family for the app
+        buttonColor: Colors.deepPurple, // Default color of all buttons!
       ),
       // home: AuthPage(),
       /* Global route registry */

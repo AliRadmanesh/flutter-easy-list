@@ -63,6 +63,11 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
+    // [MediaQuery] have [size] & [orientation] for getting device "width" & "height"
+    //  and also getting its "portrait" & "landscape" mode.
+    final double deviceWidth = MediaQuery.of(context).size.width;
+    final double targetWidth =
+        deviceWidth > 640.0 ? deviceWidth * 0.70 : deviceWidth * 0.90;
     return Scaffold(
       appBar: AppBar(
         title: Text('Log in'),
@@ -74,24 +79,27 @@ class _AuthPageState extends State<AuthPage> {
         padding: EdgeInsets.all(10.0),
         child: Center(
           child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                _buildEmailTextField(),
-                SizedBox(
-                  height: 10.0,
-                ),
-                _buildPasswordTextField(),
-                _buildAcceptSwitch(),
-                SizedBox(
-                  height: 20.0,
-                ),
-                RaisedButton(
-                  color: Theme.of(context).primaryColor,
-                  textColor: Colors.white,
-                  child: Text('LOGIN'),
-                  onPressed: _submitForm,
-                ),
-              ],
+            child: Container(
+              width: targetWidth,
+              child: Column(
+                children: <Widget>[
+                  _buildEmailTextField(),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  _buildPasswordTextField(),
+                  _buildAcceptSwitch(),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  RaisedButton(
+                    // color: Theme.of(context).primaryColor,
+                    textColor: Colors.white,
+                    child: Text('LOGIN'),
+                    onPressed: _submitForm,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

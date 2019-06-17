@@ -64,9 +64,18 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
 
   @override
   Widget build(BuildContext context) {
+    final double deviceWidth = MediaQuery.of(context).size.width;
+    final double targetWidth =
+        deviceWidth > 640.0 ? deviceWidth * 0.70 : deviceWidth * 0.90;
+    final double targetPadding = deviceWidth - targetWidth;
     return Container(
       margin: EdgeInsets.all(10.0),
+      // [ListView] items will always take the full available space,
+      // so they don't take effect by MediaQuery size.
+      // And instead of setting "width: targetWidth" in [Container]
+      // we should use padding in [ListView]
       child: ListView(
+        padding: EdgeInsets.symmetric(horizontal: targetPadding / 2),
         children: <Widget>[
           _buildTitleTextField(),
           _buildDescriptionTextField(),
@@ -74,12 +83,20 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
           SizedBox(
             height: 20.0,
           ),
-          RaisedButton(
-            color: Theme.of(context).accentColor,
-            textColor: Colors.white,
-            child: Text('Save'),
-            onPressed: _submitForm,
-          )
+          // RaisedButton(
+          //   // color: Theme.of(context).accentColor,
+          //   textColor: Colors.white,
+          //   child: Text('Save'),
+          //   onPressed: _submitForm,
+          // )
+          GestureDetector(
+            onDoubleTap: _submitForm, // Many gestures can be handled here!
+            child: Container(
+              color: Colors.green,
+              padding: EdgeInsets.all(5.0),
+              child: Text('My Button'),
+            ),
+          ),
         ],
       ),
     );
