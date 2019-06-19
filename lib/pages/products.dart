@@ -45,7 +45,7 @@ class ProductsPage extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.favorite),
             onPressed: () {},
-          ),
+          )
         ],
       ),
       body: Products(products),

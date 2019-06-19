@@ -17,10 +17,13 @@ class ProductCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           TitleDefault(product['title']),
+          /*
+            [SizedBox] is used to occupy some space
+          */
           SizedBox(
             width: 8.0,
           ),
-          PriceTag(product['price'].toString()),
+          PriceTag(product['price'].toString())
         ],
       ),
     );
@@ -32,29 +35,22 @@ class ProductCard extends StatelessWidget {
       children: <Widget>[
         IconButton(
           icon: Icon(Icons.info),
-          iconSize: 32.0,
           color: Theme.of(context).accentColor,
           /*
-                  [Navigator] is a built-in tool in flutter for Navigation.
-                  [Navigator.push] add a new page to the app stack and
-                  [Navigator.pop] will remove current page and will go back
-                  us to the previous page.
-                */
+            [Navigator] is a built-in tool in flutter for Navigation.
+            [Navigator.push] add a new page to the app stack and
+            [Navigator.pop] will remove current page and will go back
+            us to the previous page.
+          */
           onPressed: () => Navigator.pushNamed<bool>(
               context, '/product/' + productIndex.toString()),
         ),
         IconButton(
           icon: Icon(Icons.favorite_border),
-          iconSize: 32.0,
           color: Colors.red,
-          /*
-                  [Navigator] is a built-in tool in flutter for Navigation.
-                  [Navigator.push] add a new page to the app stack and
-                  [Navigator.pop] will remove current page and will go back
-                  us to the previous page.
-                */
-          onPressed: () {},
-        ),
+          onPressed: () => Navigator.pushNamed<bool>(
+              context, '/product/' + productIndex.toString()),
+        )
       ],
     );
   }
@@ -65,15 +61,11 @@ class ProductCard extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Image.asset(product['image']),
-          /*
-          [SizedBox] is used to occupy some space
-          */
           _buildTitlePriceRow(),
           AddressTag('Motahari Street, Tehran'),
-          _buildActionButtons(context),
+          _buildActionButtons(context)
         ],
       ),
     );
-    ;
   }
 }

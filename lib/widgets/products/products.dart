@@ -6,7 +6,7 @@ class Products extends StatelessWidget {
   final List<Map<String, dynamic>> products;
 
   Products(this.products) {
-    // print('[Product Widget] Constructor');
+    print('[Products Widget] Constructor');
   }
 
   Widget _buildProductList() {
@@ -17,7 +17,7 @@ class Products extends StatelessWidget {
       it won't occupy any space on the screen and also won't impact
       performance issue.
     */
-    Widget productCards = Container();
+    Widget productCards;
     if (products.length > 0) {
       /*
         [ListView] is great for limited amount of widgets/elements
@@ -39,16 +39,14 @@ class Products extends StatelessWidget {
         itemCount: products.length,
       );
     } else {
-      productCards = Center(
-        child: Text('No products found, please add some.'),
-      );
+      productCards = Container();
     }
     return productCards;
   }
 
   @override
   Widget build(BuildContext context) {
-    // print('[Product Widget] build()');
+    print('[Products Widget] build()');
     return _buildProductList();
   }
 }
