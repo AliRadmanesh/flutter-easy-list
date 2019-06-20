@@ -7,6 +7,12 @@ class ProductsModel extends Model {
   int _selectedProductIndex;
 
   List<Product> get products {
+    /*
+      NOTE: For the sake of immuatability (The act of NOT mutating/editing our state from outside),
+      we must return a brand new copy of out products list. Because lists in dart are refrences
+      and if we don't want to change the original list, we have to return a new one.
+      This logic only applies to [List]s not to [int], [String], ... types.
+    */
     return List.from(_products);
   }
 
@@ -38,5 +44,20 @@ class ProductsModel extends Model {
 
   void selectProduct(int index) {
     _selectedProductIndex = index;
+  }
+
+  void toggleProductFavoriteStatus() {
+    final bool isCurrentlyFavorite = selectedProduct.isFavorite;
+    final bool newFavoriteStatus = !isCurrentlyFavorite;
+    final Product updatedProduct = Product(
+      title: selectedProduct.title,
+      description: selectedProduct.description,
+      price: selectedProduct.price,
+      image: selectedProduct.image,
+      isFavorite: newFavoriteStatus,
+    );
+    _products[_selectedProductIndex] = updatedProduct;
+    _selectedProductIndex = null;
+    notifyListeners();
   }
 }
