@@ -13,7 +13,7 @@ mixin ConnectedProductsModel on Model {
   User _authenticatedUser;
   bool _isLoading = false;
 
-  Future<Null> addProduct(
+  Future<bool> addProduct(
       String title, String description, double price, String image) {
     _isLoading = true;
     notifyListeners();
@@ -31,8 +31,15 @@ mixin ConnectedProductsModel on Model {
             body: json.encode(productData))
         .then((http.Response response) {
       /*
-        Response object has a "body" variable that is in JSON format.
+        Response object has a "body" variable that is in JSON format
+        and a "statusCode" that is an integer.
       */
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        // There is something wrong on server side.
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
       final Map<String, dynamic> responseData = json.decode(response.body);
       print(responseData);
       final Product newProduct = Product(
@@ -47,6 +54,11 @@ mixin ConnectedProductsModel on Model {
       _products.add(newProduct);
       _isLoading = false;
       notifyListeners();
+      return true;
+    }).catchError((error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
     });
   }
 }
@@ -96,7 +108,7 @@ mixin ProductsModel on ConnectedProductsModel {
     return _showFavorites;
   }
 
-  Future<Null> updateProduct(
+  Future<bool> updateProduct(
       String title, String description, double price, String image) {
     _isLoading = true;
     notifyListeners();
@@ -126,23 +138,31 @@ mixin ProductsModel on ConnectedProductsModel {
       );
       _products[selectedProductIndex] = updatedProduct;
       notifyListeners();
+      return true;
+    }).catchError((error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
     });
   }
 
-  void deleteProduct() {
+  Future<bool> deleteProduct() {
     _isLoading = true;
     final deletedProductId = selectedProduct.id;
     _products.removeAt(selectedProductIndex);
     _selProductId = null;
     notifyListeners();
-    http
+    return http
         .delete(
             'https://flutter-products-fbf3d.firebaseio.com/products/$deletedProductId.json')
         .then((http.Response response) {
-      print('###Response###');
-      print(response.body);
       _isLoading = false;
       notifyListeners();
+      return true;
+    }).catchError((error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
     });
   }
 
@@ -151,7 +171,7 @@ mixin ProductsModel on ConnectedProductsModel {
     notifyListeners();
     return http
         .get('https://flutter-products-fbf3d.firebaseio.com/products.json')
-        .then((http.Response response) {
+        .then<Null>((http.Response response) {
       // print(json.decode(response.body));
       final List<Product> fetchedProductList = [];
       final Map<String, dynamic> productListData = json.decode(response.body);
@@ -177,7 +197,11 @@ mixin ProductsModel on ConnectedProductsModel {
       _isLoading = false;
       notifyListeners();
       _selProductId = null;
-    }); // http.get.then()
+    }).catchError((error) {
+      _isLoading = false;
+      notifyListeners();
+      return;
+    });
   }
 
   void selectProduct(String productId) {
