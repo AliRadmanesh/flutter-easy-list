@@ -12,6 +12,52 @@ mixin ConnectedProductsModel on Model {
   String _selProductId;
   User _authenticatedUser;
   bool _isLoading = false;
+}
+
+mixin ProductsModel on ConnectedProductsModel {
+  bool _showFavorites = false;
+
+  List<Product> get allProducts {
+    /*
+      NOTE: For the sake of immuatability (The act of NOT mutating/editing our state from outside),
+      we must return a brand new copy of out products list. Because lists in dart are refrences
+      and if we don't want to change the original list, we have to return a new one.
+      This logic only applies to [List]s not to [int], [String], ... types.
+    */
+    return List.from(_products);
+  }
+
+  List<Product> get displayedProducts {
+    if (_showFavorites) {
+      // Just return favorite products
+      return _products.where((Product product) => product.isFavorite).toList();
+    }
+    // Otherwise return all products
+    return List.from(_products);
+  }
+
+  int get selectedProductIndex {
+    return _products.indexWhere((Product product) {
+      return product.id == _selProductId;
+    });
+  }
+
+  String get selectedProductId {
+    return _selProductId;
+  }
+
+  Product get selectedProduct {
+    if (_selProductId == null) {
+      return null;
+    }
+    return _products.firstWhere((Product product) {
+      return product.id == _selProductId;
+    });
+  }
+
+  bool get showFavorites {
+    return _showFavorites;
+  }
 
   Future<bool> addProduct(
       String title, String description, double price, String image) {
@@ -60,52 +106,6 @@ mixin ConnectedProductsModel on Model {
       notifyListeners();
       return false;
     });
-  }
-}
-
-mixin ProductsModel on ConnectedProductsModel {
-  bool _showFavorites = false;
-
-  List<Product> get allProducts {
-    /*
-      NOTE: For the sake of immuatability (The act of NOT mutating/editing our state from outside),
-      we must return a brand new copy of out products list. Because lists in dart are refrences
-      and if we don't want to change the original list, we have to return a new one.
-      This logic only applies to [List]s not to [int], [String], ... types.
-    */
-    return List.from(_products);
-  }
-
-  List<Product> get displayedProducts {
-    if (_showFavorites) {
-      // Just return favorite products
-      return _products.where((Product product) => product.isFavorite).toList();
-    }
-    // Otherwise return all products
-    return List.from(_products);
-  }
-
-  int get selectedProductIndex {
-    return _products.indexWhere((Product product) {
-      return product.id == _selProductId;
-    });
-  }
-
-  String get selectedProductId {
-    return _selProductId;
-  }
-
-  Product get selectedProduct {
-    if (_selProductId == null) {
-      return null;
-    }
-    return _products.firstWhere((Product product) {
-      return product.id == _selProductId;
-    });
-  }
-
-  bool get showFavorites {
-    return _showFavorites;
   }
 
   Future<bool> updateProduct(
