@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 import '../models/product.dart';
 import '../models/user.dart';
+import '../models/auth.dart';
 
 mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
@@ -47,7 +48,7 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   Product get selectedProduct {
-    if (_selProductId == null) {
+    if (selectedProductId == null) {
       return null;
     }
     return _products.firstWhere((Product product) {
@@ -63,6 +64,7 @@ mixin ProductsModel on ConnectedProductsModel {
       String title, String description, double price, String image) {
     _isLoading = true;
     notifyListeners();
+    final String token = _authenticatedUser.token;
     final Map<String, dynamic> productData = {
       'title': title,
       'description': description,
@@ -73,7 +75,8 @@ mixin ProductsModel on ConnectedProductsModel {
       'userId': _authenticatedUser.id,
     };
     return http
-        .post('https://flutter-products-fbf3d.firebaseio.com/products.json',
+        .post(
+            'https://flutter-products-fbf3d.firebaseio.com/products.json?auth=$token',
             body: json.encode(productData))
         .then((http.Response response) {
       /*
@@ -112,6 +115,7 @@ mixin ProductsModel on ConnectedProductsModel {
       String title, String description, double price, String image) {
     _isLoading = true;
     notifyListeners();
+    final String token = _authenticatedUser.token;
     final Map<String, dynamic> updateData = {
       'title': title,
       'description': description,
@@ -123,7 +127,7 @@ mixin ProductsModel on ConnectedProductsModel {
     };
     return http
         .put(
-            'https://flutter-products-fbf3d.firebaseio.com/products/${selectedProduct.id}.json',
+            'https://flutter-products-fbf3d.firebaseio.com/products/${selectedProduct.id}.json?auth=$token',
             body: json.encode(updateData))
         .then((http.Response response) {
       _isLoading = false;
@@ -150,11 +154,12 @@ mixin ProductsModel on ConnectedProductsModel {
     _isLoading = true;
     final deletedProductId = selectedProduct.id;
     _products.removeAt(selectedProductIndex);
+    final String token = _authenticatedUser.token;
     _selProductId = null;
     notifyListeners();
     return http
         .delete(
-            'https://flutter-products-fbf3d.firebaseio.com/products/$deletedProductId.json')
+            'https://flutter-products-fbf3d.firebaseio.com/products/$deletedProductId.json?auth=$token')
         .then((http.Response response) {
       _isLoading = false;
       notifyListeners();
@@ -167,10 +172,12 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   Future<Null> fetchProducts() {
+    final String token = _authenticatedUser.token;
     _isLoading = true;
     notifyListeners();
     return http
-        .get('https://flutter-products-fbf3d.firebaseio.com/products.json')
+        .get(
+            'https://flutter-products-fbf3d.firebaseio.com/products.json?auth=$token')
         .then<Null>((http.Response response) {
       // print(json.decode(response.body));
       final List<Product> fetchedProductList = [];
@@ -233,9 +240,65 @@ mixin ProductsModel on ConnectedProductsModel {
 }
 
 mixin UserModel on ConnectedProductsModel {
-  void login(String email, String password) {
-    _authenticatedUser =
-        User(id: 'iodhf8954hd5gh', email: email, password: password);
+  Future<Map<String, dynamic>> authenticate(String email, String password,
+      [AuthMode mode = AuthMode.Login]) {
+    _isLoading = true;
+    notifyListeners();
+    final Map<String, dynamic> authData = {
+      'email': email,
+      'password': password,
+      'returnSecureToken': true
+    };
+    Map<String, dynamic> returnMessage = {
+      'success': false,
+      'message': 'Something went wrong :('
+    };
+    const String key = 'AIzaSyAwDLCA1WOhGLKgpQ88W-sDTgxEpVn4d0c';
+    String url = mode == AuthMode.Login
+        ? 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key='
+        : 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=';
+    return http
+        .post(
+      '$url$key',
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(authData),
+    )
+        .then((http.Response response) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      print(responseData);
+      if (mode == AuthMode.Login) {
+        if (responseData.containsKey('idToken')) {
+          _authenticatedUser = User(
+              id: responseData['localId'],
+              email: responseData['email'],
+              token: responseData['idToken']);
+          returnMessage['success'] = true;
+          returnMessage['message'] = 'You logged in successfully :)';
+        } else if (responseData['error']['message'] == 'INVALID_PASSWORD') {
+          returnMessage['message'] = 'Password is invalid.';
+        } else if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
+          returnMessage['message'] = 'This user did not exist.';
+        }
+      } else {
+        if (responseData.containsKey('idToken')) {
+          _authenticatedUser = User(
+              id: responseData['localId'],
+              email: responseData['email'],
+              token: responseData['idToken']);
+          returnMessage['success'] = true;
+          returnMessage['message'] = 'You signed up successfully :)';
+        } else if (responseData['error']['message'] == 'EMAIL_EXISTS') {
+          returnMessage['message'] = 'This email already exists.';
+        }
+      }
+      _isLoading = false;
+      notifyListeners();
+      return returnMessage;
+    }).catchError((error) {
+      _isLoading = false;
+      notifyListeners();
+      return returnMessage;
+    });
   }
 }
 
