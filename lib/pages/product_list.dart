@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import './product_edit.dart';
-import '../scoped-model/main.dart';
+import '../scoped-models/main.dart';
 
 class ProductListPage extends StatefulWidget {
   final MainModel model;
@@ -11,12 +11,14 @@ class ProductListPage extends StatefulWidget {
   ProductListPage(this.model);
 
   @override
-  _ProductListPageState createState() => _ProductListPageState();
+    State<StatefulWidget> createState() {
+      return _ProductListPageState();
+    }
 }
 
 class _ProductListPageState extends State<ProductListPage> {
   @override
-  void initState() {
+  initState() {
     widget.model.fetchProducts();
     super.initState();
   }
@@ -48,24 +50,7 @@ class _ProductListPageState extends State<ProductListPage> {
               onDismissed: (DismissDirection direction) {
                 if (direction == DismissDirection.endToStart) {
                   model.selectProduct(model.allProducts[index].id);
-                  model.deleteProduct().then((bool success) {
-                    if (!success) {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Something went wrong :('),
-                              content: Text('Please try again!'),
-                              actions: <Widget>[
-                                FlatButton(
-                                  child: Text('Okay'),
-                                  onPressed: () => Navigator.of(context).pop(),
-                                )
-                              ],
-                            );
-                          });
-                    }
-                  });
+                  model.deleteProduct();
                 } else if (direction == DismissDirection.startToEnd) {
                   print('Swiped start to end');
                 } else {

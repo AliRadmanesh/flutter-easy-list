@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+
 import 'package:scoped_model/scoped_model.dart';
 
 import '../widgets/ui_elements/title_default.dart';
-import '../scoped-model/main.dart';
 import '../models/product.dart';
+import '../scoped-models/main.dart';
 
 class ProductPage extends StatelessWidget {
   final Product product;
@@ -17,7 +18,7 @@ class ProductPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(
-          'Motahari Street, Tehran',
+          'Union Square, San Francisco',
           style: TextStyle(fontFamily: 'Oswald', color: Colors.grey),
         ),
         Container(
@@ -53,8 +54,8 @@ class ProductPage extends StatelessWidget {
             FadeInImage(
               image: NetworkImage(product.image),
               height: 300.0,
-              fit: BoxFit.contain,
-              placeholder: AssetImage('assets/images/placeholder.jpg'),
+              fit: BoxFit.cover,
+              placeholder: AssetImage('assets/food.jpg'),
             ),
             Container(
               padding: EdgeInsets.all(10.0),

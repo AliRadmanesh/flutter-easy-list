@@ -6,7 +6,7 @@ import './price_tag.dart';
 import './address_tag.dart';
 import '../ui_elements/title_default.dart';
 import '../../models/product.dart';
-import '../../scoped-model/main.dart';
+import '../../scoped-models/main.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -21,9 +21,6 @@ class ProductCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           TitleDefault(product.title),
-          /*
-            [SizedBox] is used to occupy some space
-          */
           SizedBox(
             width: 8.0,
           ),
@@ -37,32 +34,26 @@ class ProductCard extends StatelessWidget {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         return ButtonBar(
-          alignment: MainAxisAlignment.center,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.info),
-              color: Theme.of(context).accentColor,
-              /*
-            [Navigator] is a built-in tool in flutter for Navigation.
-            [Navigator.push] add a new page to the app stack and
-            [Navigator.pop] will remove current page and will go back
-            us to the previous page.
-          */
-              onPressed: () => Navigator.pushNamed<bool>(
-                  context, '/product/' + model.allProducts[productIndex].id),
-            ),
-            IconButton(
-              icon: Icon(model.allProducts[productIndex].isFavorite
-                  ? Icons.favorite
-                  : Icons.favorite_border),
-              color: Colors.red,
-              onPressed: () {
-                model.selectProduct(model.allProducts[productIndex].id);
-                model.toggleProductFavoriteStatus();
-              },
-            )
-          ],
-        );
+            alignment: MainAxisAlignment.center,
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.info),
+                color: Theme.of(context).accentColor,
+                onPressed: () => Navigator
+                        .pushNamed<bool>(context,
+                            '/product/' + model.allProducts[productIndex].id),
+              ),
+              IconButton(
+                icon: Icon(model.allProducts[productIndex].isFavorite
+                    ? Icons.favorite
+                    : Icons.favorite_border),
+                color: Colors.red,
+                onPressed: () {
+                  model.selectProduct(model.allProducts[productIndex].id);
+                  model.toggleProductFavoriteStatus();
+                },
+              ),
+            ]);
       },
     );
   }
@@ -75,15 +66,16 @@ class ProductCard extends StatelessWidget {
           FadeInImage(
             image: NetworkImage(product.image),
             height: 300.0,
-            fit: BoxFit.contain,
-            placeholder: AssetImage('assets/images/placeholder.jpg'),
+            fit: BoxFit.cover,
+            placeholder: AssetImage('assets/food.jpg'),
           ),
           _buildTitlePriceRow(),
-          AddressTag('Motahari Street, Tehran'),
+          AddressTag('Union Square, San Francisco'),
           Text(product.userEmail),
           _buildActionButtons(context)
         ],
       ),
     );
+    ;
   }
 }

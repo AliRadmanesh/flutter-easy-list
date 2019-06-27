@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../widgets/products/products.dart';
-import '../scoped-model/main.dart';
+import '../widgets/ui_elements/logout_list_tile.dart';
+import '../scoped-models/main.dart';
 
 class ProductsPage extends StatefulWidget {
   final MainModel model;
@@ -11,12 +12,14 @@ class ProductsPage extends StatefulWidget {
   ProductsPage(this.model);
 
   @override
-  _ProductsPageState createState() => _ProductsPageState();
+  State<StatefulWidget> createState() {
+    return _ProductsPageState();
+  }
 }
 
 class _ProductsPageState extends State<ProductsPage> {
   @override
-  void initState() {
+  initState() {
     widget.model.fetchProducts();
     super.initState();
   }
@@ -27,55 +30,47 @@ class _ProductsPageState extends State<ProductsPage> {
         children: <Widget>[
           AppBar(
             automaticallyImplyLeading: false,
-            /* [automaticallyImplyLeading] means it automatically tries to infer
-                  what the first icon or action in the app bar should be
-              */
             title: Text('Choose'),
           ),
-          /* [ListTile] is a neat widget which looks nice, out of the box and
-                positions its child elements nicely :)
-            */
           ListTile(
             leading: Icon(Icons.edit),
             title: Text('Manage Products'),
             onTap: () {
-              /* Named route */
               Navigator.pushReplacementNamed(context, '/admin');
             },
-          )
+          ),
+          Divider(),
+          LogoutListTile()
         ],
       ),
     );
   }
 
   Widget _buildProductsList() {
-    return ScopedModelDescendant<MainModel>(
-        builder: (BuildContext context, Widget child, MainModel model) {
-      Widget content = Center(child: Text('No Products Found!'));
-      if (model.displayedProducts.length > 0 && !model.isLoading) {
-        content = Products();
-      } else if (model.isLoading) {
-        content = Center(child: CircularProgressIndicator());
-      }
-      return RefreshIndicator(
-        onRefresh: model.fetchProducts,
-        child: content,
-      );
-    });
+    return ScopedModelDescendant(
+      builder: (BuildContext context, Widget child, MainModel model) {
+        Widget content = Center(child: Text('No Products Found!'));
+        if (model.displayedProducts.length > 0 && !model.isLoading) {
+          content = Products();
+        } else if (model.isLoading) {
+          content = Center(child: CircularProgressIndicator());
+        }
+        return RefreshIndicator(onRefresh: model.fetchProducts, child: content,) ;
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /* [drawer] is on the left. [endDrawer] is on the right. */
       drawer: _buildSideDrawer(context),
       appBar: AppBar(
-        title: Text('Easy List'),
+        title: Text('EasyList'),
         actions: <Widget>[
           ScopedModelDescendant<MainModel>(
             builder: (BuildContext context, Widget child, MainModel model) {
               return IconButton(
-                icon: Icon(model.showFavorites
+                icon: Icon(model.displayFavoritesOnly
                     ? Icons.favorite
                     : Icons.favorite_border),
                 onPressed: () {
@@ -83,7 +78,7 @@ class _ProductsPageState extends State<ProductsPage> {
                 },
               );
             },
-          ),
+          )
         ],
       ),
       body: _buildProductsList(),
